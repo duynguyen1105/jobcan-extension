@@ -1,6 +1,6 @@
 {
-  "name": "Jobcan provip",
-  "description": "A super provip extension",
+  "name": "Github urls",
+  "description": "Github urls",
   "version": "1.0",
   "manifest_version": 3,
   "action": {
