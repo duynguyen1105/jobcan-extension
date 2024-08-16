@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener((msg, sender, callback) => {
       return !hasBranch && !i.getAttribute("href")?.includes("axios");
     })
     .map(
-      (i: Element, index: number) => `- ${index}. ${i.getAttribute("href")}`
+      (i: Element, index: number) => `${index}. ${i.getAttribute("href")}`
     );
 
   const content = "\n" + listUrls.join("\n");
