@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { render } from 'react-dom'
 
 export const Popup = () => {
-  const [branch, setBranch] = useState('main')
+  const [branch, setBranch] = useState("0")
 
   const onSubmitForm = () => {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
@@ -49,9 +49,10 @@ export const Popup = () => {
           borderColor: '#0d6efd',
         }}
       >
-        <option value="main">main</option>
-        <option value="staging">staging</option>
-        <option value="production">production</option>
+        <option value="0">main + staging</option>
+        <option value="1">main</option>
+        <option value="2">staging</option>
+        <option value="3">production</option>
       </select>
       <button
         type="submit"
