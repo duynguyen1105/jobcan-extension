@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener((msg, sender, callback) => {
 
     if (
       isAutoSendRequest &&
-      (!startInput.value || !endTimeInput.value || !breakTimeInput.value)
+      !(!startInput.value || !endTimeInput.value || !breakTimeInput.value)
     ) {
       const button = parentElement.getElementsByClassName(
         'btn jbc-btn-secondary'
