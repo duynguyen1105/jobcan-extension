@@ -8,7 +8,7 @@ A Chrome extension that automates time entry for Jobcan time tracking system. Th
 - **Fixed Time Mode**: Set specific start/end times and break duration
 - **Random Time Mode**: Generates realistic random times within configured ranges
   - Start time: 08:30 - 09:00 (30-minute range)
-  - End time: 17:30 - 18:30 (60-minute range)
+  - End time: 18:00 - 18:30 (60-minute range)
 - **Auto-Submit**: Optionally auto-click the submit button after filling times
 - **Visual Feedback**: Highlights filled fields with aqua background color
 - **Weekend Skip**: Automatically skips Saturday (T7) and Sunday (CN) entries
