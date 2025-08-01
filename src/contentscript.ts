@@ -1,6 +1,12 @@
 chrome.runtime.onMessage.addListener((msg, sender, callback) => {
-  const { startTimeValue, endTimeValue, breakTimeValue, isAutoSendRequest } =
-    msg
+  const {
+    startTimeValue,
+    endTimeValue,
+    breakTimeValue,
+    isAutoSendRequest,
+    isRandomTime,
+  } = msg
+
   const listDays = document.getElementsByClassName('align-middle border-left-0')
   for (let index = 0; index < listDays.length; index++) {
     const weekday = listDays[index] as HTMLElement
@@ -23,12 +29,16 @@ chrome.runtime.onMessage.addListener((msg, sender, callback) => {
 
     if (!startInput.value) {
       startInput.style.backgroundColor = 'aqua'
-      startInput.value = startTimeValue
+      startInput.value = isRandomTime
+        ? `08:5${Math.floor(Math.random() * 9)}`
+        : startTimeValue
     }
 
     if (!endTimeInput.value) {
       endTimeInput.style.backgroundColor = 'aqua'
-      endTimeInput.value = endTimeValue
+      endTimeInput.value = isRandomTime
+        ? `18:0${Math.floor(Math.random() * 9)}`
+        : endTimeValue
     }
 
     if (!breakTimeInput.value) {
