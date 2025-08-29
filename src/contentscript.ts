@@ -1,3 +1,41 @@
+function generateWeightedRandomTime(
+  primaryRange: { start: number; end: number; weight: number },
+  secondaryRange: { start: number; end: number; weight: number }
+): string {
+  const random = Math.random() * 100
+  let selectedRange =
+    random < primaryRange.weight ? primaryRange : secondaryRange
+
+  const randomMinutes =
+    Math.floor(Math.random() * (selectedRange.end - selectedRange.start + 1)) +
+    selectedRange.start
+
+  const hours = Math.floor(randomMinutes / 60)
+  const minutes = randomMinutes % 60
+
+  return `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')}`
+}
+
+function generateRandomStartTime(): string {
+  // 80% chance of 08:45-09:00 (525-540 minutes from midnight)
+  // 20% chance of 08:30-08:45 (510-525 minutes from midnight)
+  return generateWeightedRandomTime(
+    { start: 525, end: 540, weight: 80 }, // 08:45-09:00
+    { start: 510, end: 525, weight: 20 } // 08:30-08:45
+  )
+}
+
+function generateRandomEndTime(): string {
+  // 80% chance of 18:00-18:15 (1080-1095 minutes from midnight)
+  // 20% chance of 18:15-18:30 (1095-1110 minutes from midnight)
+  return generateWeightedRandomTime(
+    { start: 1080, end: 1095, weight: 80 }, // 18:00-18:15
+    { start: 1095, end: 1110, weight: 20 } // 18:15-18:30
+  )
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, callback) => {
   const {
     startTimeValue,
@@ -30,15 +68,13 @@ chrome.runtime.onMessage.addListener((msg, sender, callback) => {
     if (!startInput.value) {
       startInput.style.backgroundColor = 'aqua'
       startInput.value = isRandomTime
-        ? `08:5${Math.floor(Math.random() * 9)}`
+        ? generateRandomStartTime()
         : startTimeValue
     }
 
     if (!endTimeInput.value) {
       endTimeInput.style.backgroundColor = 'aqua'
-      endTimeInput.value = isRandomTime
-        ? `18:0${Math.floor(Math.random() * 9)}`
-        : endTimeValue
+      endTimeInput.value = isRandomTime ? generateRandomEndTime() : endTimeValue
     }
 
     if (!breakTimeInput.value) {
