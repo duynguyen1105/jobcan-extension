@@ -17,7 +17,8 @@ const plugins = [
   }),
   new CopyWebpackPlugin({
     patterns: [
-      {from: "public", to: "."}
+      {from: "public", to: "."},
+      {from: "src/popup-page/fouc-prevention.js", to: "fouc-prevention.js"},
     ],
   }),
   new CleanWebpackPlugin(),
@@ -36,6 +37,9 @@ module.exports = {
   },
   module: {
     rules: [tsRule],
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   plugins,
 }

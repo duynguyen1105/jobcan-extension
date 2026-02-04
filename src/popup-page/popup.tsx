@@ -1,17 +1,20 @@
 import React, { useState } from 'react'
 import { render } from 'react-dom'
-import styled from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
+import { ThemeMode } from './theme'
+import { useThemeMode } from './useTheme'
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem;
-  background-color: #f9f9f9;
+  background-color: ${props => props.theme.formBackground};
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px ${props => props.theme.formShadow};
   font-family: 'Arial', sans-serif;
   position: relative;
+  color-scheme: ${props => props.theme.colorScheme};
 `
 
 const InputGroup = styled.div`
@@ -22,20 +25,22 @@ const InputGroup = styled.div`
 
 const Label = styled.label`
   font-size: 1rem;
-  color: #333;
+  color: ${props => props.theme.labelText};
 `
 
 const Input = styled.input`
   width: 60%;
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid ${props => props.theme.inputBorder};
   border-radius: 4px;
+  background-color: ${props => props.theme.inputBackground};
+  color: ${props => props.theme.inputText};
   transition: border-color 0.3s;
 
   &:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: ${props => props.theme.focusBorder};
   }
 `
 
@@ -56,8 +61,8 @@ const Button = styled.button`
   font-weight: 600;
   line-height: 1.5;
   text-align: center;
-  color: #fff;
-  background-color: #0d6efd;
+  color: ${props => props.theme.buttonText};
+  background-color: ${props => props.theme.buttonBackground};
   border: none;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
@@ -65,7 +70,7 @@ const Button = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: ${props => props.theme.buttonHover};
   }
 `
 
@@ -73,19 +78,22 @@ const Select = styled.select`
   width: max-content;
   padding: 0.2rem;
   font-size: 0%.7;
-  border: 1px solid #ccc;
+  border: 1px solid ${props => props.theme.inputBorder};
   border-radius: 4px;
+  background-color: ${props => props.theme.selectBackground};
+  color: ${props => props.theme.inputText};
   transition: border-color 0.3s;
 
   &:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: ${props => props.theme.focusBorder};
   }
 `
 
 const SelectContainer = styled.div`
   display: flex;
   justify-content: end;
+  gap: 0.5rem;
   margin: -1rem;
   margin-right: 0rem;
 `
@@ -93,9 +101,9 @@ const SelectContainer = styled.div`
 const CenterToastMessage = styled.div`
   width: max-content;
   padding: 0.5rem;
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background-color: ${props => props.theme.toastBackground};
+  color: ${props => props.theme.toastText};
+  border: 1px solid ${props => props.theme.toastBorder};
   border-radius: 4px;
   position: absolute;
   top: 50%;
@@ -125,6 +133,7 @@ export const Popup = () => {
   const [isRandomTime, setIsRandomTime] = useState(false)
   const [language, setLanguage] = useState('en')
   const [openPopup, setOpenPopup] = useState(false)
+  const { themeMode, resolvedTheme, setThemeMode } = useThemeMode()
 
   const onSubmitForm = () => {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
@@ -150,70 +159,81 @@ export const Popup = () => {
   }
 
   return (
-    <Form onSubmit={onSubmitForm}>
-      <SelectContainer>
-        <Select id="cars" value={language} onChange={handleChangeLanguage}>
-          <option value="en">EN</option>
-          <option value="vi">VI</option>
-        </Select>
-      </SelectContainer>
-      <InputGroup>
-        <Label htmlFor="start-time">Start Time</Label>
-        <Input
-          id="start-time"
-          type="time"
-          value={startTimeValue}
-          disabled={isRandomTime}
-          onChange={(e) => setStartTimeValue(e.target.value)}
-        />
-      </InputGroup>
+    <ThemeProvider theme={resolvedTheme}>
+      <Form onSubmit={onSubmitForm}>
+        <SelectContainer>
+          <Select
+            aria-label="Theme"
+            value={themeMode}
+            onChange={(e) => setThemeMode(e.target.value as ThemeMode)}
+          >
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </Select>
+          <Select aria-label="Language" id="cars" value={language} onChange={handleChangeLanguage}>
+            <option value="en">EN</option>
+            <option value="vi">VI</option>
+          </Select>
+        </SelectContainer>
+        <InputGroup>
+          <Label htmlFor="start-time">Start Time</Label>
+          <Input
+            id="start-time"
+            type="time"
+            value={startTimeValue}
+            disabled={isRandomTime}
+            onChange={(e) => setStartTimeValue(e.target.value)}
+          />
+        </InputGroup>
 
-      <InputGroup>
-        <Label htmlFor="end-time">End Time</Label>
-        <Input
-          id="end-time"
-          type="time"
-          value={endTimeValue}
-          disabled={isRandomTime}
-          onChange={(e) => setEndTimeValue(e.target.value)}
-        />
-      </InputGroup>
+        <InputGroup>
+          <Label htmlFor="end-time">End Time</Label>
+          <Input
+            id="end-time"
+            type="time"
+            value={endTimeValue}
+            disabled={isRandomTime}
+            onChange={(e) => setEndTimeValue(e.target.value)}
+          />
+        </InputGroup>
 
-      <InputGroup>
-        <Label htmlFor="break-time">Break Time</Label>
-        <Input
-          id="break-time"
-          type="time"
-          value={breakTimeValue}
-          disabled={isRandomTime}
-          onChange={(e) => setBreakTimeValue(e.target.value)}
-        />
-      </InputGroup>
+        <InputGroup>
+          <Label htmlFor="break-time">Break Time</Label>
+          <Input
+            id="break-time"
+            type="time"
+            value={breakTimeValue}
+            disabled={isRandomTime}
+            onChange={(e) => setBreakTimeValue(e.target.value)}
+          />
+        </InputGroup>
 
-      <CheckboxWrapper>
-        <Checkbox
-          type="checkbox"
-          id="auto-click-send-request"
-          checked={isAutoSendRequest}
-          onChange={(e) => setIsAutoSendRequest(e.target.checked)}
-        />
-        <Label htmlFor="auto-click-send-request">Auto click send request</Label>
-        <Checkbox
-          type="checkbox"
-          id="random-time"
-          checked={isRandomTime}
-          onChange={(e) => setIsRandomTime(e.target.checked)}
-        />
-        <Label htmlFor="random-time">Random time</Label>
-      </CheckboxWrapper>
+        <CheckboxWrapper>
+          <Checkbox
+            type="checkbox"
+            id="auto-click-send-request"
+            checked={isAutoSendRequest}
+            onChange={(e) => setIsAutoSendRequest(e.target.checked)}
+          />
+          <Label htmlFor="auto-click-send-request">Auto click send request</Label>
+          <Checkbox
+            type="checkbox"
+            id="random-time"
+            checked={isRandomTime}
+            onChange={(e) => setIsRandomTime(e.target.checked)}
+          />
+          <Label htmlFor="random-time">Random time</Label>
+        </CheckboxWrapper>
 
-      <Button type="submit">Triểnn</Button>
-      {openPopup && (
-        <CenterToastMessage>
-          <p>Please làm ơn liên hệ @Jenna đi học Tiếng Anh thứ 2,4 16h!?!</p>
-        </CenterToastMessage>
-      )}
-    </Form>
+        <Button type="submit">Triểnn</Button>
+        {openPopup && (
+          <CenterToastMessage>
+            <p>Please làm ơn liên hệ @Jenna đi học Tiếng Anh thứ 2,4 16h!?!</p>
+          </CenterToastMessage>
+        )}
+      </Form>
+    </ThemeProvider>
   )
 }
 

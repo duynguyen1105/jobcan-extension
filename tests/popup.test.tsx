@@ -28,7 +28,7 @@ describe('Popup', () => {
     expect(view.getByLabelText('Auto click send request')).toBeInTheDocument()
     expect(view.getByLabelText('Random time')).toBeInTheDocument()
     expect(view.getByRole('button', { name: /triểnn/i })).toBeInTheDocument()
-    expect(view.getByRole('combobox')).toBeInTheDocument()
+    expect(view.getAllByRole('combobox')).toHaveLength(2)
   })
 
   it('has correct default values', () => {
@@ -156,7 +156,7 @@ describe('Popup', () => {
   it('shows toast when Vietnamese language is selected', () => {
     const { view } = renderPopup()
 
-    const select = view.getByRole('combobox')
+    const select = view.getByRole('combobox', { name: 'Language' })
     fireEvent.change(select, { target: { value: 'vi' } })
 
     expect(
@@ -167,7 +167,7 @@ describe('Popup', () => {
   it('hides toast after 5 seconds', () => {
     const { view } = renderPopup()
 
-    const select = view.getByRole('combobox')
+    const select = view.getByRole('combobox', { name: 'Language' })
     fireEvent.change(select, { target: { value: 'vi' } })
 
     expect(view.getByText(/liên hệ @Jenna/i)).toBeInTheDocument()
@@ -182,10 +182,67 @@ describe('Popup', () => {
   it('does not show toast when English language is selected', () => {
     const { view } = renderPopup()
 
-    const select = view.getByRole('combobox')
+    const select = view.getByRole('combobox', { name: 'Language' })
     // Already 'en' by default, but change to 'en' explicitly
     fireEvent.change(select, { target: { value: 'en' } })
 
     expect(view.queryByText(/liên hệ @Jenna/i)).not.toBeInTheDocument()
+  })
+
+  describe('Dark mode', () => {
+    it('renders theme selector with system/light/dark options', () => {
+      const { view } = renderPopup()
+
+      const themeSelect = view.getByRole('combobox', { name: 'Theme' })
+      expect(themeSelect).toBeInTheDocument()
+
+      const options = within(themeSelect).getAllByRole('option')
+      expect(options).toHaveLength(3)
+      expect(options[0]).toHaveTextContent('System')
+      expect(options[1]).toHaveTextContent('Light')
+      expect(options[2]).toHaveTextContent('Dark')
+    })
+
+    it('defaults theme to light', () => {
+      const { view } = renderPopup()
+
+      const themeSelect = view.getByRole('combobox', { name: 'Theme' })
+      expect(themeSelect).toHaveValue('light')
+    })
+
+    it('falls back to light theme when local storage is empty', () => {
+      ;(chrome.storage.local.get as jest.Mock).mockImplementation(
+        (_key: string, cb: (result: Record<string, unknown>) => void) => {
+          cb({})
+        }
+      )
+
+      const { view } = renderPopup()
+
+      const themeSelect = view.getByRole('combobox', { name: 'Theme' })
+      expect(themeSelect).toHaveValue('light')
+    })
+
+    it('calls chrome.storage.local.set when theme is changed', () => {
+      const { view } = renderPopup()
+
+      const themeSelect = view.getByRole('combobox', { name: 'Theme' })
+      fireEvent.change(themeSelect, { target: { value: 'dark' } })
+
+      expect(chrome.storage.local.set).toHaveBeenCalledWith({ themeMode: 'dark' })
+    })
+
+    it('loads saved theme preference on mount', () => {
+      ;(chrome.storage.local.get as jest.Mock).mockImplementation(
+        (_key: string, cb: (result: Record<string, unknown>) => void) => {
+          cb({ themeMode: 'dark' })
+        }
+      )
+
+      const { view } = renderPopup()
+
+      const themeSelect = view.getByRole('combobox', { name: 'Theme' })
+      expect(themeSelect).toHaveValue('dark')
+    })
   })
 })
