@@ -1,4 +1,4 @@
-function generateWeightedRandomTime(
+export function generateWeightedRandomTime(
   primaryRange: { start: number; end: number; weight: number },
   secondaryRange: { start: number; end: number; weight: number }
 ): string {
@@ -18,7 +18,7 @@ function generateWeightedRandomTime(
     .padStart(2, '0')}`
 }
 
-function generateRandomStartTime(): string {
+export function generateRandomStartTime(): string {
   // 80% chance of 08:45-09:00 (525-540 minutes from midnight)
   // 20% chance of 08:30-08:45 (510-525 minutes from midnight)
   return generateWeightedRandomTime(
@@ -27,7 +27,7 @@ function generateRandomStartTime(): string {
   )
 }
 
-function generateRandomEndTime(): string {
+export function generateRandomEndTime(): string {
   // 80% chance of 18:00-18:15 (1080-1095 minutes from midnight)
   // 20% chance of 18:15-18:30 (1095-1110 minutes from midnight)
   return generateWeightedRandomTime(
@@ -36,16 +36,26 @@ function generateRandomEndTime(): string {
   )
 }
 
-chrome.runtime.onMessage.addListener((msg, sender, callback) => {
+interface TimeEntryConfig {
+  startTimeValue: string
+  endTimeValue: string
+  breakTimeValue: string
+  isAutoSendRequest: boolean
+  isRandomTime: boolean
+}
+
+export function processTimeEntries(
+  listDays: HTMLCollectionOf<Element>,
+  config: TimeEntryConfig
+) {
   const {
     startTimeValue,
     endTimeValue,
     breakTimeValue,
     isAutoSendRequest,
     isRandomTime,
-  } = msg
+  } = config
 
-  const listDays = document.getElementsByClassName('align-middle border-left-0')
   for (let index = 0; index < listDays.length; index++) {
     const weekday = listDays[index] as HTMLElement
     const parentElement = weekday.parentElement as HTMLElement
@@ -92,4 +102,9 @@ chrome.runtime.onMessage.addListener((msg, sender, callback) => {
       button.click()
     }
   }
+}
+
+chrome.runtime.onMessage.addListener((msg, sender, callback) => {
+  const listDays = document.getElementsByClassName('align-middle border-left-0')
+  processTimeEntries(listDays, msg)
 })
