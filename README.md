@@ -28,13 +28,13 @@ A Chrome extension that automates time entry for Jobcan time tracking system. Th
 2. Install dependencies:
 
    ```bash
-   yarn install
+   bun install
    ```
 
 3. Build the extension:
 
    ```bash
-   yarn dev
+   bun run dev
    ```
 
 4. Load the extension in Chrome:
@@ -74,8 +74,7 @@ If you have a `dist.zip` file:
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- Yarn package manager
+- [Bun](https://bun.sh/) runtime
 - Chrome browser for testing
 
 ### Project Structure
@@ -99,10 +98,13 @@ jobcan-extension/
 
 ```bash
 # Install dependencies
-yarn install
+bun install
 
 # Build for development
-yarn dev
+bun run dev
+
+# Run tests
+bun run test
 
 # The built extension will be in the dist/ folder
 ```

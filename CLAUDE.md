@@ -9,11 +9,13 @@ Chrome Extension (Manifest v3) that automates time entry for the Jobcan time tra
 ## Build Commands
 
 ```bash
-yarn install                # Install dependencies
-yarn dev                    # Build extension to dist/ (single webpack build, no watch mode)
+bun install                 # Install dependencies
+bun run dev                 # Build extension to dist/ (single webpack build, no watch mode)
+bun run test                # Run tests
+bun run test:coverage       # Run tests with coverage
 ```
 
-No test framework is configured. No linter is configured.
+No linter is configured.
 
 After building, load the `dist/` folder as an unpacked extension in Chrome at `chrome://extensions/` with Developer mode enabled.
 
