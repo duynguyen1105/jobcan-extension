@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack",
+    "dev:chrome": "webpack",
+    "dev:firefox": "TARGET_BROWSER=firefox webpack",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"

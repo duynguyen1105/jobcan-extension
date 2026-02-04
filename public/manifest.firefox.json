@@ -1,0 +1,26 @@
+{
+  "name": "Jobcan provip",
+  "description": "A super provip extension",
+  "version": "1.1",
+  "manifest_version": 3,
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "contentscript.js"
+      ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "jobcan-provip@example.com",
+      "strict_min_version": "109.0"
+    }
+  }
+}
