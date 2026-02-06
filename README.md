@@ -1,6 +1,18 @@
 # Jobcan Extension
 
-A Chrome extension that automates time entry for Jobcan time tracking system. This extension helps streamline your daily time logging by automatically filling in start times, end times, and break durations with either preset values or randomized realistic times.
+A browser extension that automates time entry for the Jobcan time tracking system. Supports Chrome, Brave, and Firefox. This extension helps streamline your daily time logging by automatically filling in start times, end times, and break durations with either preset values or randomized realistic times.
+
+## Table of Contents
+
+- [Features](#-features)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Development](#-development)
+- [Technical Details](#-technical-details)
+- [Customization](#-customization)
+- [Notes](#-notes)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ## 🚀 Features
 
@@ -13,8 +25,20 @@ A Chrome extension that automates time entry for Jobcan time tracking system. Th
 - **Visual Feedback**: Highlights filled fields with aqua background color
 - **Weekend Skip**: Automatically skips Saturday (T7) and Sunday (CN) entries
 - **Multi-language Support**: English and Vietnamese interface
+- **Dark Mode**: Supports dark and light themes
 
 ## 📦 Installation
+
+### From GitHub Release (Recommended)
+
+1. Go to the [Releases](../../releases/latest) page
+2. Download the zip file for your browser:
+   - **Chrome/Brave**: `jobcan-chrome-vX.X.X.zip`
+   - **Firefox**: `jobcan-firefox-vX.X.X.zip`
+3. Extract the zip file
+4. Load the extension:
+   - **Chrome/Brave**: Go to `chrome://extensions/` → Enable "Developer mode" → "Load unpacked" → select extracted folder
+   - **Firefox**: Go to `about:debugging#/runtime/this-firefox` → "Load Temporary Add-on" → select any file in extracted folder
 
 ### From Source
 
@@ -34,24 +58,17 @@ A Chrome extension that automates time entry for Jobcan time tracking system. Th
 3. Build the extension:
 
    ```bash
-   bun run dev
+   bun run dev:chrome    # For Chrome/Brave
+   bun run dev:firefox   # For Firefox
    ```
 
-4. Load the extension in Chrome:
-   - Open Chrome and go to `chrome://extensions/`
-   - Enable "Developer mode" in the top right
-   - Click "Load unpacked" and select the `dist` folder
-
-### From Pre-built Package
-
-If you have a `dist.zip` file:
-
-1. Extract the zip file
-2. Load the extracted folder as an unpacked extension in Chrome
+4. Load the extension:
+   - **Chrome/Brave**: Go to `chrome://extensions/` → Enable "Developer mode" → "Load unpacked" → select `dist/chrome/`
+   - **Firefox**: Go to `about:debugging#/runtime/this-firefox` → "Load Temporary Add-on" → select any file in `dist/firefox/`
 
 ## 🎯 Usage
 
-1. **Open the Extension**: Click the extension icon in your Chrome toolbar
+1. **Open the Extension**: Click the extension icon in your browser toolbar
 
 2. **Configure Settings**:
 
@@ -75,23 +92,29 @@ If you have a `dist.zip` file:
 ### Prerequisites
 
 - [Bun](https://bun.sh/) runtime
-- Chrome browser for testing
+- Chrome or Firefox browser for testing
 
 ### Project Structure
 
 ```
 jobcan-extension/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml              # CI: tests on PRs and pushes
+│       └── release.yml         # Release: build + zip on tags
 ├── src/
-│   ├── contentscript.ts      # Main logic for filling time entries
+│   ├── contentscript.ts        # Main logic for filling time entries
 │   └── popup-page/
-│       ├── popup.html        # Extension popup HTML
-│       └── popup.tsx         # React popup component
+│       ├── popup.html          # Extension popup HTML
+│       └── popup.tsx           # React popup component
 ├── public/
-│   └── manifest.json         # Extension manifest
-├── dist/                     # Built extension files
-├── package.json              # Dependencies and scripts
-├── tsconfig.json            # TypeScript configuration
-└── webpack.config.js        # Webpack build configuration
+│   ├── manifest.json           # Chrome extension manifest
+│   └── manifest.firefox.json   # Firefox extension manifest
+├── tests/                      # Test files
+├── dist/                       # Built extension files
+├── package.json                # Dependencies and scripts
+├── tsconfig.json               # TypeScript configuration
+└── webpack.config.js           # Webpack build configuration
 ```
 
 ### Development Commands
@@ -100,13 +123,20 @@ jobcan-extension/
 # Install dependencies
 bun install
 
-# Build for development
+# Build for Chrome
+bun run dev:chrome
+
+# Build for Firefox
+bun run dev:firefox
+
+# Build for Chrome (default)
 bun run dev
 
 # Run tests
 bun run test
 
-# The built extension will be in the dist/ folder
+# Run tests with coverage
+bun run test:coverage
 ```
 
 ### Technology Stack
